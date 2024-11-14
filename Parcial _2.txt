@@ -1,0 +1,49 @@
+Consultas:
+  Calcular el Precio Promedio y Máximo de Productos por Marca:
+SELECT marca, AVG(precio_actual) AS precio_promedio, MAX(precio_actual) AS precio_maximo
+FROM Productos
+GROUP BY marca
+HAVING AVG(precio_actual) > 500;
+
+  Resultados obtenidos:
+marca   precio_promedio precio_maximo
+MarcaA  1200.000000     1200.00
+
+
+  Obtener Productos con la Variación de Precio más Reciente:
+SELECT p.nombre, v.precio_nuevo, v.fecha
+FROM Productos p
+JOIN Variaciones_precio v ON p.producto_id = v.producto_id
+WHERE v.fecha IN (SELECT MAX(fecha) FROM Variaciones_precio GROUP BY producto_id)
+ORDER BY v.fecha DESC;
+
+  Resultados obtenidos:
+nombre	     precio_nuevo   fecha
+Laptop X1	     1200.00	   2024-01-01
+Smartphone A5   300.00	   2024-01-02
+
+
+  Contar la Cantidad de Pedidos por Cliente:
+SELECT c.nombre, COUNT(p.pedido_id) AS cantidad_pedidos
+FROM clientes c
+LEFT JOIN pedidos p ON c.cliente_id = p.cliente_id
+GROUP BY c.cliente_id;
+
+  Resultados obtenidos:
+nombre          cantidad_pedidos
+juan perez      2
+maria martinez  0
+
+
+  Obtener los 5 Productos más Costosos Disponibles en el Catálogo:
+SELECT p.nombre AS producto, p.precio_actual AS precio
+FROM Productos p
+JOIN Catalogo c ON p.producto_id = c.producto_id
+WHERE c.disponible = TRUE
+ORDER BY p.precio_actual DESC
+LIMIT 5;
+
+  Resultados obtenidos:
+producto        precio
+Laptop X1	     1200.00
+Smartphone A5   300.00
